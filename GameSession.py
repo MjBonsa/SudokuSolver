@@ -55,6 +55,7 @@ class GameSession(Sudoku.Sudoku):
         if str(input()) == "load":
             self.field, checkField = self.load_game()
             self.normal_play_body(checkField)
+            exit()
         difficulty = input("Введите количество известных клеток (не больше 80) ")
         try:
             difficulty = int(difficulty)
