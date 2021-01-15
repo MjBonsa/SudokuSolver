@@ -20,17 +20,23 @@ class GameSession(Sudoku.Sudoku):
         print("Заполните поле подсказами")
         print("Вводите команды типа строка, колонка, число для заполнения")
         print("или start для запсука решения")
-        tmp = str(input("Строка, колонка, число или start "))
+        tmp = '0'
+        row, column, number = 0, 0, 0
         while tmp != "start":
-            row, column, number = list(map(int, tmp.split()))
+            tmp = str(input("Строка, колонка, число или start "))
+            try:
+                row, column, number = list(map(int, tmp.split()))
+            except:
+                print("Невверный ввод")
+            if row > 9 or column > 9 or number > 9:
+                print("Невверный ввод")
+                continue
             self.field[row - 1][column - 1] = number
             self.print_out(self.field)
-            print("Строка, колонка, число или start ")
-            tmp = str(input())
         if self.is_correct():
             field = self.gen_clear_field()
             field = self.copy_field(field, self.field)
-            if self.solver(field,showing):
+            if self.solver(field, showing):
                 print("Судоку решено")
                 exit()
         print("Судоку не имеет решений")
@@ -80,11 +86,21 @@ class GameSession(Sudoku.Sudoku):
         while self.zeros_in_field(self.field):
             print("Выберите строку, колонку, число (или save для сохранения игры)")
             tmp = str(input())
-            if tmp == "save":
-                self.save_game(checkField)
-                exit()
-            else:
-                row, column, number = list(map(int, tmp.split()))
+            ch = 0
+            while not ch:
+                if tmp == "save":
+                    self.save_game(checkField)
+                    exit()
+                try:
+                    row, column, number = list(map(int, tmp.split()))
+                    ch = True
+                except:
+                    print("Невверный ввод")
+                    tmp = str(input())
+                if row > 9 or column > 9:
+                    print("Поле 9 на 9!1!")
+                    tmp = str(input())
+                    ch = 0
             row -= 1;
             column -= 1;
             tmp = self.field[row][column]
@@ -101,7 +117,6 @@ class GameSession(Sudoku.Sudoku):
             else:
                 self.field[row][column] = number
                 self.print_out(self.field)
-
         if self.is_correct():
             print("Судоку решено верно")
         else:
